@@ -74,8 +74,8 @@ class AuthController extends Controller
 
         // Send password reset email here
         return $status === Password::RESET_LINK_SENT
-        ? response()->json(['message' => __($status)])
-        : response()->json(['error' => __($status)], 500);
+            ? response()->json(['message' => __($status)])
+            : response()->json(['error' => __($status)], 500);
     }
 
     public function resetPassword(Request $request)
@@ -86,7 +86,7 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        User::where('email', $request->email)->first();
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -101,7 +101,7 @@ class AuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-        ? response()->json(['message' => __($status)])
-        : response()->json(['error' => __($status)], 500);
+            ? response()->json(['message' => __($status)])
+            : response()->json(['error' => __($status)], 500);
     }
 }
