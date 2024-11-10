@@ -16,12 +16,33 @@ class Source extends Model
      */
     protected $fillable = ['name'];
 
-   /**
+    /**
      * Get articles for the source.
      */
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class);
+    }
+
+    public function setApiKeyAttribute($value)
+    {
+        $this->attributes['api_key'] = encrypt($value);
+    }
+
+    public function setApiSecretAttribute($value)
+    {
+        $this->attributes['api_secret'] = encrypt($value);
+    }
+
+    // Decrypt when accessed
+    public function getApiKeyAttribute($value)
+    {
+        return decrypt($value);
+    }
+
+    public function getApiSecretAttribute($value)
+    {
+        return decrypt($value);
     }
 
 
