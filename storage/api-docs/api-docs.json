@@ -1,0 +1,299 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "News Aggregator API",
+        "description": "News Aggregator API Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://localhost:8000",
+            "description": "Development Server"
+        }
+    ],
+    "paths": {
+        "/api/articles": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Get articles",
+                "description": "Get paginated list of articles",
+                "operationId": "7e370449b00151b6422003b99ee09b88",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "path",
+                        "description": "Search keyword for articles",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "elections"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get articles"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/articles/{id}": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Get article by ID",
+                "description": "Retrieve detailed information for a specific article by providing the article ID.",
+                "operationId": "getArticleById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the article to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Sample Article Title"
+                                        },
+                                        "content": {
+                                            "type": "string",
+                                            "example": "This is the content of the article."
+                                        },
+                                        "author": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "published_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-01-01T12:00:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid ID supplied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid ID"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Article not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Authentication required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "description": "Register a new user and receive an access token",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "User's full name",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "User's unique email",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "description": "User's password",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "Password confirmation",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registered successfully"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "description": "Revoke all tokens for the authenticated user, effectively logging them out",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Article",
+            "description": "Article"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        }
+    ]
+}
