@@ -13,6 +13,13 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::factory()->count(5)->create();
+        // Fixed categories for simplification
+        $categories = ['Business', 'Entertainment', 'Health', 'Technology', 'Sports'];
+
+        foreach ($categories as $category) {
+            Category::firstOrCreate(
+                ['name' => $category]
+            );
+        }
     }
 }

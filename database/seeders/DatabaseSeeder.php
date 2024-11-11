@@ -14,10 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         // Run seeders for other models
         $this->call([
-            AuthorSeeder::class,
             CategorySeeder::class,
             SourceSeeder::class,
-            ArticleSeeder::class,
             UserSeeder::class,
         ]);
     }
