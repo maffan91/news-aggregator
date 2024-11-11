@@ -16,6 +16,11 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->timestamps();
         });
+
+        // Add Relationship to articles table
+        Schema::table('articles', function (Blueprint $table) {
+            $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
+        });
     }
 
     /**
@@ -24,5 +29,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('authors');
+
+        Schema::table('articles', function (Blueprint $table) {
+            $table->dropForeign(['author_id']);
+        });
     }
 };

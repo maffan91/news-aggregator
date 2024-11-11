@@ -18,15 +18,10 @@ return new class extends Migration
             $table->string('thumbnail');
             $table->timestamps();
 
-            // Add foreign key constraints
+            // Add foreign keys
             $table->unsignedBigInteger('source_id')->nullable();
             $table->unsignedBigInteger('author_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('source_id')->references('id')->on('sources')->onDelete('cascade');
-            $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-
-
         });
     }
 
