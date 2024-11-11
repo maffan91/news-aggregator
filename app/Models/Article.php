@@ -19,6 +19,7 @@ class Article extends Model
         'title',
         'description',
         'thumbnail',
+        'url',
         'source_id',
         'category_id',
         'author_id',
