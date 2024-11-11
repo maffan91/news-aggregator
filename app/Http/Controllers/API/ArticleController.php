@@ -6,14 +6,13 @@ use App\Filters\ArticleFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
-use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, ArticleFilter $filters)
+    public function index(ArticleFilter $filters)
     {
         $articles = $filters->apply(Article::with(['source', 'category', 'author']))
                             ->paginate(10);
