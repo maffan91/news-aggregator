@@ -13,8 +13,7 @@ class NewsAggregatorService
     public function __construct(
         protected NewsApiClient $newsApiClient,
         protected ArticleRepository $articleRepository
-        )
-    {}
+    ) {}
 
     public function fetch(Category $category)
     {
@@ -25,9 +24,10 @@ class NewsAggregatorService
 
             foreach ($articles as $articleData) {
                 $parsedData = $parser->parseArticle($articleData);
-                $this->articleRepository->saveIfNotExists($parsedData, $source->id, $category->id);
+                if (!empty($parsedData)) {
+                    $this->articleRepository->saveIfNotExists($parsedData, $source->id, $category->id);
+                }
             }
         }
-
     }
 }

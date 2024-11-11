@@ -8,6 +8,8 @@ class NewsApiParser implements ArticleParser
 {
     public function parseArticle(array $data): array
     {
+        if(empty($data)) return [];
+
         return [
             'title' => $data['title'] ?? 'Untitled',
             'description' => $data['description'] ??  'No description available yet',

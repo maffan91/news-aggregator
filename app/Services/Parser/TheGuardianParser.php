@@ -8,6 +8,7 @@ class TheGuardianParser implements ArticleParser
 {
     public function parseArticle(array $data): array
     {
+        if (empty($data)) return [];
         return [
             'title' => $data['fields']['headline'] ?? 'Untitled',
             'description' => $data['fields']['trailText'] ?? 'No description available yet',

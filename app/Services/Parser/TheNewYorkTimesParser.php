@@ -8,6 +8,8 @@ class TheNewYorkTimesParser implements ArticleParser
 {
     public function parseArticle(array $data): array
     {
+        if (empty($data)) return [];
+
         return [
             'title' => $data['headline']['main'] ?? 'Untitled',
             'description' => $data['lead_paragraph'] ?? 'No description available yet',
