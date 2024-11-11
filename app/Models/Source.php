@@ -14,7 +14,12 @@ class Source extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'url',
+        'api_key',
+        'api_secret'
+    ];
 
     /**
      * Get articles for the source.
@@ -45,5 +50,8 @@ class Source extends Model
         return decrypt($value);
     }
 
-
+    public function scopeEnabled($query)
+    {
+        return $query->where('enabled', true);
+    }
 }
