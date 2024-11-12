@@ -35,8 +35,19 @@ If the project is running correctly, then all tests should pass. Run the tests u
 `./vendor/bin/sail artisan test`
 
 ### API Documentation
-Api documentation is available at: `http://localhost/api/documentation`
+Api documentation is available at: `http://localhost/api/documentation`. It's not fully complete due to the time constraints.
+
+### Fetching the News
+
+Make sure the database is seeded. Run the following command:
+`./vendor/bin/sail artisan news:fetch`
+You will see the command will fetch news articles for the given categories.
+
+### Scheduled based fetching
+
+The above command is configured to run on hourly bases. You can change it to run for shorter period in the `routes/console.php` and then start  the scheduler by running:
+`./vendor/bin/sail artisan schedule:work`
 
 
 #### Caution:
-If `localhost` or  any other port is already occupied, you need to change the port in the `docker-compose.yml`
+If `localhost` or  any other port is already occupied, you need to change the port in the `docker-compose.yml` and rebuild.
