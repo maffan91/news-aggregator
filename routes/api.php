@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
 
     //Article routes
-    Route::get('/articles', [ArticleController::class, 'index'])->middleware('throttle:30,1');
+    Route::get('/articles', [ArticleController::class, 'index']);
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
 
     //User routes
@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/preferences', [UserPreferenceController::class, 'store']);
 
     //User Feed route
-    Route::get('/user/feed', [UserFeedController::class, 'index'])->middleware('throttle:30,1');
+    Route::get('/user/feed', [UserFeedController::class, 'index']);
 });
 
 
