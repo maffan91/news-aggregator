@@ -12,7 +12,35 @@ use Illuminate\Support\Facades\Cache;
 class UserFeedController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *  path="/api/user/feed",
+     *  tags={"UserFeed"},
+     *  summary="Get News Feed for user",
+     *  description="Get paginated feed of news articles",
+     *  @OA\Response(
+     *      response=200,
+     *      description="User feed",
+     *      @OA\JsonContent(
+     *          type="array",
+     *          @OA\Items(
+     *              type="object",
+     *              @OA\Property(property="id", type="integer", example=1),
+     *              @OA\Property(property="title", type="string", example="Sample Article Title"),
+     *              @OA\Property(property="content", type="string", example="This is the content of the article."),
+     *              @OA\Property(property="author", type="string", example="John Doe"),
+     *          )
+     *      )
+     *  ),
+     *  @OA\Response(
+     *      response=401,
+     *      description="Unauthorized - Authentication required",
+     *      @OA\JsonContent(
+     *          type="object",
+     *          @OA\Property(property="error", type="string", example="Unauthorized")
+     *      )
+     *  ),
+     * )
+     * security={{"BearerAuth": {}}}
      */
     public function index(Request $request, UserFeedFilter $filters)
     {
