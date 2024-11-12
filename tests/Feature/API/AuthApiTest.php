@@ -8,130 +8,138 @@ use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
-// Register
-it('registers a user with valid data', function () {
-    $response = $this->postJson('/api/register', [
-        'name' => 'John Doe',
-        'email' => 'john@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
-    ]);
+describe('Auth', function () {
 
-    $response->assertStatus(201)
-        ->assertJsonStructure(['message', 'user', 'token']);
-});
+    describe('POST api/register', function () {
+        it('registers a user with valid data', function () {
+            $response = $this->postJson('/api/register', [
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
 
-it('fails to register a user with invalid data', function () {
-    $response = $this->postJson('/api/register', [
-        'name' => '',
-        'email' => 'not-an-email',
-        'password' => 'short',
-        'password_confirmation' => 'short',
-    ]);
+            $response->assertStatus(201)
+                ->assertJsonStructure(['message', 'user', 'token']);
+        });
 
-    $response->assertStatus(422)
-        ->assertJsonValidationErrors(['name', 'email', 'password']);
-});
+        it('fails to register a user with invalid data', function () {
+            $response = $this->postJson('/api/register', [
+                'name' => '',
+                'email' => 'not-an-email',
+                'password' => 'short',
+                'password_confirmation' => 'short',
+            ]);
 
-// Login
-it('logs in a user with correct credentials', function () {
-    User::factory()->create([
-        'email' => 'john@example.com',
-        'password' => Hash::make('password123'),
-    ]);
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['name', 'email', 'password']);
+        });
+    });
 
-    $response = $this->postJson('/api/login', [
-        'email' => 'john@example.com',
-        'password' => 'password123',
-    ]);
+    describe('POST api/login', function () {
+        it('logs in a user with correct credentials', function () {
+            User::factory()->create([
+                'email' => 'john@example.com',
+                'password' => Hash::make('password123'),
+            ]);
 
-    $response->assertStatus(200)
-        ->assertJsonStructure(['message', 'user', 'access_token']);
-});
+            $response = $this->postJson('/api/login', [
+                'email' => 'john@example.com',
+                'password' => 'password123',
+            ]);
 
-it('fails to log in with incorrect credentials', function () {
-    User::factory()->create([
-        'email' => 'john@example.com',
-        'password' => Hash::make('password123'),
-    ]);
+            $response->assertStatus(200)
+                ->assertJsonStructure(['message', 'user', 'access_token']);
+        });
 
-    $response = $this->postJson('/api/login', [
-        'email' => 'john@example.com',
-        'password' => 'wrongpassword',
-    ]);
+        it('fails to log in with incorrect credentials', function () {
+            User::factory()->create([
+                'email' => 'john@example.com',
+                'password' => Hash::make('password123'),
+            ]);
 
-    $response->assertStatus(401)
-        ->assertJson(['message' => 'Invalid credentials']);
-});
+            $response = $this->postJson('/api/login', [
+                'email' => 'john@example.com',
+                'password' => 'wrongpassword',
+            ]);
 
-// Logout
-it('logs out an authenticated user', function () {
-    $user = User::factory()->create();
-    $token = $user->createToken('test')->plainTextToken;
+            $response->assertStatus(401)
+                ->assertJson(['message' => 'Invalid credentials']);
+        });
+    });
 
-    $response = $this->withToken($token)->postJson('/api/logout');
+    describe('POST /api/logout', function () {
+        it('logs out an authenticated user', function () {
+            $user = User::factory()->create();
+            $token = $user->createToken('test')->plainTextToken;
 
-    $response->assertStatus(200)
-        ->assertJson(['message' => 'User logged out successfully']);
-});
+            $response = $this->withToken($token)->postJson('/api/logout');
 
-// Forgot Password
-it('sends a password reset link to a valid user email', function () {
-    User::factory()->create(['email' => 'john@example.com']);
+            $response->assertStatus(200)
+                ->assertJson(['message' => 'User logged out successfully']);
+        });
+    });
 
-    $response = $this->postJson('/api/forgot-password', ['email' => 'john@example.com']);
+    describe('POST /api/forgot-password', function () {
+        it('sends a password reset link to a valid user email', function () {
+            User::factory()->create(['email' => 'john@example.com']);
 
-    $response->assertStatus(200)
-        ->assertJson(['message' => __('passwords.sent')]);
-});
+            $response = $this->postJson('/api/forgot-password', ['email' => 'john@example.com']);
 
-it('fails to send a reset link to a non-existent email', function () {
-    $response = $this->postJson('/api/forgot-password', ['email' => 'nonexistent@example.com']);
+            $response->assertStatus(200)
+                ->assertJson(['message' => __('passwords.sent')]);
+        });
 
-    $response->assertStatus(422)
-        ->assertJsonValidationErrors(['email']);
-});
+        it('fails to send a reset link to a non-existent email', function () {
+            $response = $this->postJson('/api/forgot-password', ['email' => 'nonexistent@example.com']);
 
-// Reset Password
-it('resets password with a valid token and email', function () {
-    $user = User::factory()->create([
-        'email' => 'john@doe.com',
-        'password' => Hash::make('oldpassword123'),
-    ]);
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['email']);
+        });
+    });
 
-    // Insert the reset token manually into the database
-    $token = Str::random(60);
-    DB::table('password_reset_tokens')->insert([
-        'email' => $user->email,
-        'token' => Hash::make($token),
-        'created_at' => now(),
-    ]);
+    describe('POST /api/reset-password', function () {
+        it('resets password with a valid token and email', function () {
+            $user = User::factory()->create([
+                'email' => 'john@doe.com',
+                'password' => Hash::make('oldpassword123'),
+            ]);
 
-    $response = $this->postJson('/api/reset-password', [
-        'email' => 'john@doe.com',
-        'token' => $token,
-        'password' => 'newpassword123',
-        'password_confirmation' => 'newpassword123',
-    ]);
+            // Insert the reset token manually into the database
+            $token = Str::random(60);
+            DB::table('password_reset_tokens')->insert([
+                'email' => $user->email,
+                'token' => Hash::make($token),
+                'created_at' => now(),
+            ]);
 
-    $response->assertStatus(200)
-        ->assertJson(['message' => __('passwords.reset')]);
+            $response = $this->postJson('/api/reset-password', [
+                'email' => 'john@doe.com',
+                'token' => $token,
+                'password' => 'newpassword123',
+                'password_confirmation' => 'newpassword123',
+            ]);
 
-    $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
-});
+            $response->assertStatus(200)
+                ->assertJson(['message' => __('passwords.reset')]);
 
-it('fails to reset password with an invalid token', function () {
-    User::factory()->create([
-        'email' => 'john@example.com',
-    ]);
+            $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
+        });
 
-    $response = $this->postJson('/api/reset-password', [
-        'email' => 'john@example.com',
-        'token' => 'invalid-token',
-        'password' => 'newpassword123',
-        'password_confirmation' => 'newpassword123',
-    ]);
+        it('fails to reset password with an invalid token', function () {
+            User::factory()->create([
+                'email' => 'john@example.com',
+            ]);
 
-    $response->assertStatus(500)
-        ->assertJson(['error' => __('passwords.token')]);
+            $response = $this->postJson('/api/reset-password', [
+                'email' => 'john@example.com',
+                'token' => 'invalid-token',
+                'password' => 'newpassword123',
+                'password_confirmation' => 'newpassword123',
+            ]);
+
+            $response->assertStatus(500)
+                ->assertJson(['error' => __('passwords.token')]);
+        });
+    });
 });

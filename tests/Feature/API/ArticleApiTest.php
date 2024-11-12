@@ -10,7 +10,7 @@ use Laravel\Sanctum\Sanctum;
 uses(RefreshDatabase::class);
 
 describe('Article APIs', function () {
-    describe('/api/article', function () {
+    describe('GET /api/article', function () {
         it('returns a list or articles for an authenticated user', function () {
             $user = User::factory()->create();
             Sanctum::actingAs($user);
@@ -57,7 +57,7 @@ describe('Article APIs', function () {
     });
 
 
-    describe('/api/article/{id}', function () {
+    describe('GET /api/article/{id}', function () {
 
         it('returns a single article for authenticated user', function () {
             $user = User::factory()->create();
@@ -66,6 +66,14 @@ describe('Article APIs', function () {
             $article = Article::factory()->create();
             $response = $this->get('/api/articles/'.$article->id);
             $response->assertStatus(200);
+        });
+
+        it('returns a 404 error for non-existing article', function () {
+            $user = User::factory()->create();
+            Sanctum::actingAs($user);
+            $response = $this->getJson('/api/articles/' . 99999);
+            $response->assertStatus(404);
+            $response->assertJson(['message' => 'Not found.']);
         });
 
         it('returns a 401 error for unauthenticated requests', function () {

@@ -12,7 +12,7 @@ class UserPreferenceController extends Controller
 {
     public function index(Request $request)
     {
-        $userPreference = $request->user()->userPreference;
+        $userPreference = $request->user()->userPreference ?? [];
         return response()->json($userPreference);
     }
 
