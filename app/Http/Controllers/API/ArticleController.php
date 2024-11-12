@@ -23,7 +23,7 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
         $article = Article::with(['source', 'category', 'author'])->findOrFail($id);
 
