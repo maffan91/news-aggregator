@@ -2,33 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Filters\ArticleFilter;
+use App\Filters\UserFeedFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use Illuminate\Http\Request;
 
-class ArticleController extends Controller
+class UserFeedController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(ArticleFilter $filters)
+    public function index(UserFeedFilter $filters)
     {
         $articles = $filters->apply(Article::with(['source', 'category', 'author']))
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-
         return ArticleResource::collection($articles);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(int $id)
-    {
-        $article = Article::with(['source', 'category', 'author'])->findOrFail($id);
-
-        // Return a single article as a resource
-        return new ArticleResource($article);
     }
 }

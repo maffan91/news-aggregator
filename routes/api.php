@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\UserPreferenceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\API\UserFeedController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // User Preferences routes
     Route::get('/user/preferences', [UserPreferenceController::class, 'index']);
     Route::post('/user/preferences', [UserPreferenceController::class, 'store']);
+
+    //User Feed route
+    Route::get('/user/feed', [UserFeedController::class, 'index']);
 });
 
 
